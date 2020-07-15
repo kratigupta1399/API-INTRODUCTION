@@ -1,0 +1,42 @@
+import requests
+
+import matplotlib.pyplot as plt
+def get_place(city):
+    api_key = "AIzaSyB6AhDcEux73PWbJaa1t6Oo7jBVGLrudfw"
+    url = f"https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input={city}&inputtype=textquery&fields=place_id,photos,formatted_address,name,rating&key={api_key}"
+    resp = requests.get(url)
+    data = resp.json()
+    for palace in data['candidates']:
+        name = palace['name']
+        address = palace['formatted_address']
+        ph_refs = [ d['photo_reference'] for d in palace['photos'] ] # list comprenshions 
+        image_url = u = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference={}&key={}"
+        urls = [ image_url.format(ref, api_key) for ref in ph_refs ]
+        print("\n\n")
+        print("__"*30)
+        print("\n\n")
+        print("Name: ", name)
+        print("Address: ", address)
+        print("\n\n")
+        for each_image in urls:
+            with open('test.jpeg', 'wb') as fp:
+                fp.write(requests.get(each_image).content)
+            im = plt.imread('test.jpeg')
+            plt.imshow(im)
+            plt.xticks([])
+            plt.yticks([])
+            ax = plt.gca()
+            for sp in ax.spines:
+                ax.spines[sp].set_visible(False)
+            plt.show()
+        print("\n\n")
+        print("__"*30)
+get_place('diggi,rajasthan')
+
+
+
+
+
+
+
+
